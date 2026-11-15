@@ -1,0 +1,38 @@
+plugins {
+    id "com.android.application"
+}
+
+android {
+    namespace "com.game.nightparty"
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "com.game.nightparty.v5"
+        minSdk 24
+        targetSdk 35
+        versionCode 14
+        versionName "7.2.2"
+    }
+}
+
+tasks.register("syncGameAssets", Sync) {
+    from(rootProject.projectDir.parentFile) {
+        include "index.html"
+        include "app.js"
+        include "styles.css"
+        include "service-worker.js"
+        include "manifest.webmanifest"
+        include "icons/**"
+        into "game"
+    }
+    from(rootProject.projectDir.parentFile) {
+        include "index.html"
+        rename { "play.html" }
+        into "game"
+    }
+    into layout.projectDirectory.dir("src/main/assets")
+}
+
+tasks.named("preBuild").configure {
+    dependsOn("syncGameAssets")
+}
